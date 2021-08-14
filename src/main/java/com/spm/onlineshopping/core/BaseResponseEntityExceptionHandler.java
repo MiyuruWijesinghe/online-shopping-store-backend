@@ -21,6 +21,7 @@ import com.spm.onlineshopping.exception.NoRecordFoundException;
 import com.spm.onlineshopping.exception.UserNotFoundException;
 import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.resource.AttributeResource;
+import com.spm.onlineshopping.resource.AttributeValueResource;
 import com.spm.onlineshopping.resource.BrandResource;
 import com.spm.onlineshopping.resource.CategoryResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
@@ -107,7 +108,15 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.setAccessible(true);
 					sField.set(attributeResource.getClass().cast(attributeResource), error.getDefaultMessage());
 				}
-				return new ResponseEntity<>(attributeResource, HttpStatus.UNPROCESSABLE_ENTITY);	
+				return new ResponseEntity<>(attributeResource, HttpStatus.UNPROCESSABLE_ENTITY);
+			case "attributeValueResource":
+				AttributeValueResource attributeValueResource = new AttributeValueResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = attributeValueResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(attributeValueResource.getClass().cast(attributeValueResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(attributeValueResource, HttpStatus.UNPROCESSABLE_ENTITY);	
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
