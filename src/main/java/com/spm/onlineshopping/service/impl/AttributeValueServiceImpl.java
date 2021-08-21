@@ -75,7 +75,7 @@ public class AttributeValueServiceImpl implements AttributeValueService {
 	}
 
 	@Override
-	public List<AttributeValue> findByAttributeId(Long attributeId) {
+	public List<AttributeValue> findByAttributeId(int attributeId) {
 		return attributeValueRepository.findByAttributesId(attributeId);
 	}
 

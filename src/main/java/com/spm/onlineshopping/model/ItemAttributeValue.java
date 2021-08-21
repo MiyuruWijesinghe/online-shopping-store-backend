@@ -24,10 +24,10 @@ public class ItemAttributeValue {
 	private AttributeValue attributeValues;
 	
 	@Transient
-    private Integer attributeValueId;
+    private String attributeName;
 	
 	@Transient
-    private String attributeName;
+    private Integer attributeValueId;
 	
 	@Transient
     private String attributeValue;

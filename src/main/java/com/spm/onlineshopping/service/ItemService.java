@@ -2,10 +2,11 @@ package com.spm.onlineshopping.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
+
 import com.spm.onlineshopping.model.Item;
-import com.spm.onlineshopping.resource.ItemAddResource;
-import com.spm.onlineshopping.resource.ItemUpdateResource;
+import com.spm.onlineshopping.resource.ItemResource;
 
 @Service
 public interface ItemService {
@@ -20,11 +21,11 @@ public interface ItemService {
 	
 	public List<Item> findByName(String name);
 	
-	public List<Item> findByCategoryIdAndStatus(Long categoryId, String status);
+	public List<Item> findByCategoryIdAndStatus(int categoryId, String status);
 	
-	public Integer saveItem(ItemAddResource itemAddResource);
+	public Integer saveItem(ItemResource itemResource);
 	
-	public Item updateItem(int id, ItemUpdateResource itemUpdateResource);
+	public Item updateItem(int id, ItemResource itemResource);
 	
 	public String deleteItem(int id);
 }

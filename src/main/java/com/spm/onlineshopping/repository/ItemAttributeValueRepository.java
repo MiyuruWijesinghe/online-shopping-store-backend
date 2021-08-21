@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+
 import com.spm.onlineshopping.model.ItemAttributeValue;
 
 @Repository
@@ -14,6 +15,8 @@ public interface ItemAttributeValueRepository extends MongoRepository<ItemAttrib
 
 	public Optional<ItemAttributeValue> findByItemsIdAndAttributeValuesIdAndIdNotIn(int itemId, int attributeValueId, int id);
 
-	public List<ItemAttributeValue> findByItemsId(Integer itemId);
+	public List<ItemAttributeValue> findByItemsId(int itemId);
+	
+	public List<ItemAttributeValue> findByStatus(String status);
 
 }

@@ -17,7 +17,7 @@ public interface ItemRepository extends MongoRepository<Item, Integer> {
 	
 	public List<Item> findByNameContaining(String name);
 
-	public List<Item> findByCategorysIdAndStatus(Long categoryId, String status);
+	public List<Item> findByCategorysIdAndStatus(int categoryId, String status);
 	
 	public Optional<Item> findByCodeAndIdNotIn(String code, int id);
 

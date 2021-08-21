@@ -1,14 +1,12 @@
 package com.spm.onlineshopping.resource;
 
-import java.util.List;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ItemUpdateResource {
+public class ItemResource {
 
 	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")	
@@ -60,9 +58,6 @@ public class ItemUpdateResource {
 	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|ACTIVE|INACTIVE",message="{common-status.pattern}")
 	private String status;
-	
-	@Valid
-	private List<ItemAttributeValueUpdateResource> itemAttributes;
 
 	public String getCategoryId() {
 		return categoryId;
@@ -175,13 +170,4 @@ public class ItemUpdateResource {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	public List<ItemAttributeValueUpdateResource> getItemAttributes() {
-		return itemAttributes;
-	}
-
-	public void setItemAttributes(List<ItemAttributeValueUpdateResource> itemAttributes) {
-		this.itemAttributes = itemAttributes;
-	}
-	
 }

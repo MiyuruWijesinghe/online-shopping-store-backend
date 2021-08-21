@@ -17,7 +17,7 @@ public interface AttributeValueService {
 	
 	public List<AttributeValue> findByName(String name);
 	
-	public List<AttributeValue> findByAttributeId(Long attributeId);
+	public List<AttributeValue> findByAttributeId(int attributeId);
 	
 	public Integer saveAttributeValue(AttributeValueResource attributeValueResource);
 	

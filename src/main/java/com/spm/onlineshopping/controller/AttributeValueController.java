@@ -115,7 +115,7 @@ public class AttributeValueController {
 	 * @return the attribute values by attribute id
 	 */
 	@GetMapping(value = "/attribute/{attributeId}")
-	public ResponseEntity<Object> getAttributeValuesByAttributeId(@PathVariable(value = "attributeId", required = true) Long attributeId) {
+	public ResponseEntity<Object> getAttributeValuesByAttributeId(@PathVariable(value = "attributeId", required = true) int attributeId) {
 		SuccessAndErrorDetailsResource responseMessage = new SuccessAndErrorDetailsResource();
 		List<AttributeValue> attributeValue = attributeValueService.findByAttributeId(attributeId);
 		if (!attributeValue.isEmpty()) {

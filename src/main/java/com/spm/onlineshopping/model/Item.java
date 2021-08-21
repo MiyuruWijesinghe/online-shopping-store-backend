@@ -1,13 +1,13 @@
 package com.spm.onlineshopping.model;
 
 import java.math.BigDecimal;
-import java.util.List;
+
 import javax.persistence.Transient;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Document(collection = "Item")
 public class Item {
@@ -64,10 +64,6 @@ public class Item {
 	private String modifiedUser;
 	
 	private String modifiedDate;
-	
-	@Transient
-	@JsonInclude(Include.NON_NULL)
-	private List<ItemAttributeValue> itemAttributes;
 
 	public Integer getId() {
 		return id;
@@ -267,14 +263,6 @@ public class Item {
 
 	public void setModifiedDate(String modifiedDate) {
 		this.modifiedDate = modifiedDate;
-	}
-
-	public List<ItemAttributeValue> getItemAttributes() {
-		return itemAttributes;
-	}
-
-	public void setItemAttributes(List<ItemAttributeValue> itemAttributes) {
-		this.itemAttributes = itemAttributes;
 	}
 	
 }

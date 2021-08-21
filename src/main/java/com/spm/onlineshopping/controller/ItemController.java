@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spm.onlineshopping.enums.CommonStatus;
 import com.spm.onlineshopping.model.Item;
-import com.spm.onlineshopping.resource.ItemAddResource;
-import com.spm.onlineshopping.resource.ItemUpdateResource;
+import com.spm.onlineshopping.resource.ItemResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
-import com.spm.onlineshopping.service.ItemAttributeValueService;
 import com.spm.onlineshopping.service.ItemService;
 
 @RestController
@@ -38,10 +36,6 @@ public class ItemController {
 	
 	@Autowired
 	private ItemService itemService;
-	
-	@Autowired
-	private ItemAttributeValueService itemAttributeValueService;
-	
 	
 	/**
 	 * Gets the all items.
@@ -144,7 +138,7 @@ public class ItemController {
 	 * @return the items by category id
 	 */
 	@GetMapping(value = "/category/{categoryId}")
-	public ResponseEntity<Object> getItemsByCategoryId(@PathVariable(value = "categoryId", required = true) Long categoryId) {
+	public ResponseEntity<Object> getItemsByCategoryId(@PathVariable(value = "categoryId", required = true) int categoryId) {
 		SuccessAndErrorDetailsResource responseMessage = new SuccessAndErrorDetailsResource();
 		List<Item> item = itemService.findByCategoryIdAndStatus(categoryId, CommonStatus.ACTIVE.toString());
 		if (!item.isEmpty()) {
@@ -159,12 +153,12 @@ public class ItemController {
 	/**
 	 * Adds the item.
 	 *
-	 * @param itemAddResource - the item add resource
+	 * @param itemResource - the item resource
 	 * @return the response entity
 	 */
 	@PostMapping(value = "/save")
-	public ResponseEntity<Object> addItem(@Valid @RequestBody ItemAddResource itemAddResource) {
-		Integer itemId = itemService.saveItem(itemAddResource);
+	public ResponseEntity<Object> addItem(@Valid @RequestBody ItemResource itemResource) {
+		Integer itemId = itemService.saveItem(itemResource);
 		SuccessAndErrorDetailsResource successDetailsDto = new SuccessAndErrorDetailsResource(environment.getProperty("common.saved"), itemId.toString());
 		return new ResponseEntity<>(successDetailsDto, HttpStatus.CREATED);
 	}
@@ -174,13 +168,13 @@ public class ItemController {
 	 * Update item.
 	 *
 	 * @param id - the id
-	 * @param itemUpdateResource - the item update resource
+	 * @param itemResource - the item resource
 	 * @return the response entity
 	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Object> updateItem(@PathVariable(value = "id", required = true) int id,
-			@Valid @RequestBody ItemUpdateResource itemUpdateResource) {
-		Item item = itemService.updateItem(id, itemUpdateResource);
+			@Valid @RequestBody ItemResource itemResource) {
+		Item item = itemService.updateItem(id, itemResource);
 		SuccessAndErrorDetailsResource successDetailsDto = new SuccessAndErrorDetailsResource(environment.getProperty("common.updated"), item);
 		return new ResponseEntity<>(successDetailsDto, HttpStatus.OK);
 	}
@@ -195,20 +189,6 @@ public class ItemController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Object> deleteItem(@PathVariable(value = "id", required = true) int id) {
 		String message = itemService.deleteItem(id);
-		SuccessAndErrorDetailsResource successDetailsDto = new SuccessAndErrorDetailsResource(message);
-		return new ResponseEntity<>(successDetailsDto, HttpStatus.CREATED);
-	}
-	
-	
-	/**
-	 * Delete item attribute value.
-	 *
-	 * @param itemAttributeValueId - the item attribute value id
-	 * @return the response entity
-	 */
-	@DeleteMapping(value = "/attribute-value/{itemAttributeValueId}")
-	public ResponseEntity<Object> deleteItemAttributeValue(@PathVariable(value = "itemAttributeValueId", required = true) int itemAttributeValueId) {
-		String message = itemAttributeValueService.deleteItemAttributeValue(itemAttributeValueId);
 		SuccessAndErrorDetailsResource successDetailsDto = new SuccessAndErrorDetailsResource(message);
 		return new ResponseEntity<>(successDetailsDto, HttpStatus.CREATED);
 	}

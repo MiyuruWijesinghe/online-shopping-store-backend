@@ -1,8 +1,7 @@
 package com.spm.onlineshopping.core;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import com.spm.onlineshopping.enums.TransferType;
 import com.spm.onlineshopping.exception.CodeUniqueException;
-import com.spm.onlineshopping.exception.InvalidDetailListServiceIdException;
 import com.spm.onlineshopping.exception.InvalidServiceIdException;
 import com.spm.onlineshopping.exception.NoRecordFoundException;
 import com.spm.onlineshopping.exception.UserNotFoundException;
@@ -27,10 +24,8 @@ import com.spm.onlineshopping.resource.AttributeResource;
 import com.spm.onlineshopping.resource.AttributeValueResource;
 import com.spm.onlineshopping.resource.BrandResource;
 import com.spm.onlineshopping.resource.CategoryResource;
-import com.spm.onlineshopping.resource.ItemAddResource;
-import com.spm.onlineshopping.resource.ItemAttributeValueAddResource;
-import com.spm.onlineshopping.resource.ItemAttributeValueUpdateResource;
-import com.spm.onlineshopping.resource.ItemUpdateResource;
+import com.spm.onlineshopping.resource.ItemAttributeValueResource;
+import com.spm.onlineshopping.resource.ItemResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.resource.ValidateResource;
 
@@ -124,64 +119,22 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.set(attributeValueResource.getClass().cast(attributeValueResource), error.getDefaultMessage());
 				}
 				return new ResponseEntity<>(attributeValueResource, HttpStatus.UNPROCESSABLE_ENTITY);	
-			case "itemAddResource": 
-				ItemAddResource itemAddResource = new ItemAddResource();
-                for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-                    fieldName=error.getField();
-                    if(fieldName.startsWith("itemAttributes")) {
-                         fieldName=fieldName.replace("itemAttributes", "");
-                             atPoint = fieldName.indexOf(']');
-                             index=Integer.parseInt(fieldName.substring(1, atPoint));
-                             fieldName=fieldName.substring(atPoint+2);
-                             for (int i=0; i<=index; i++) {
-                                 if(itemAddResource.getItemAttributes()==null || itemAddResource.getItemAttributes().isEmpty()) {
-                                	 itemAddResource.setItemAttributes(new ArrayList<ItemAttributeValueAddResource>());
-                                	 itemAddResource.getItemAttributes().add(i, new ItemAttributeValueAddResource());
-                                 }else{
-                                     if((itemAddResource.getItemAttributes().size()-1)<i) {
-                                    	 itemAddResource.getItemAttributes().add(i, new ItemAttributeValueAddResource());
-                                     }
-                                 }
-                             }
-                             sField=itemAddResource.getItemAttributes().get(index).getClass().getDeclaredField(fieldName);
-                             sField.setAccessible(true);
-                             sField.set(itemAddResource.getItemAttributes().get(index), error.getDefaultMessage());
-                    }else {
-                        sField =  itemAddResource.getClass().getDeclaredField(error.getField());
-                        sField.setAccessible(true);
-                        sField.set(itemAddResource.getClass().cast(itemAddResource), error.getDefaultMessage());
-                    }
-                }
-                return new ResponseEntity<>(itemAddResource, HttpStatus.UNPROCESSABLE_ENTITY);
-        	case "itemUpdateResource": 
-        		ItemUpdateResource itemUpdateResource = new ItemUpdateResource();
-                for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-                    fieldName=error.getField();
-                    if(fieldName.startsWith("itemAttributes")) {
-                         fieldName=fieldName.replace("itemAttributes", "");
-                             atPoint = fieldName.indexOf(']');
-                             index=Integer.parseInt(fieldName.substring(1, atPoint));
-                             fieldName=fieldName.substring(atPoint+2);
-                             for (int i=0; i<=index; i++) {
-                                 if(itemUpdateResource.getItemAttributes()==null || itemUpdateResource.getItemAttributes().isEmpty()) {
-                                	 itemUpdateResource.setItemAttributes(new ArrayList<ItemAttributeValueUpdateResource>());
-                                	 itemUpdateResource.getItemAttributes().add(i, new ItemAttributeValueUpdateResource());
-                                 }else{
-                                     if((itemUpdateResource.getItemAttributes().size()-1)<i) {
-                                    	 itemUpdateResource.getItemAttributes().add(i, new ItemAttributeValueUpdateResource());
-                                     }
-                                 }
-                             }
-                             sField=itemUpdateResource.getItemAttributes().get(index).getClass().getDeclaredField(fieldName);
-                             sField.setAccessible(true);
-                             sField.set(itemUpdateResource.getItemAttributes().get(index), error.getDefaultMessage());
-                    }else {
-                        sField =  itemUpdateResource.getClass().getDeclaredField(error.getField());
-                        sField.setAccessible(true);
-                        sField.set(itemUpdateResource.getClass().cast(itemUpdateResource), error.getDefaultMessage());
-                    }
-                }
-                return new ResponseEntity<>(itemUpdateResource, HttpStatus.UNPROCESSABLE_ENTITY);	
+			case "itemResource":
+				ItemResource itemResource = new ItemResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = itemResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(itemResource.getClass().cast(itemResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(itemResource, HttpStatus.UNPROCESSABLE_ENTITY);
+			case "itemAttributeValueResource":
+				ItemAttributeValueResource itemAttributeValueResource = new ItemAttributeValueResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = itemAttributeValueResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(itemAttributeValueResource.getClass().cast(itemAttributeValueResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(itemAttributeValueResource, HttpStatus.UNPROCESSABLE_ENTITY);	
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -223,58 +176,6 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 			successAndErrorDetailsDto.setDetails(e.getMessage());
 			return new ResponseEntity<>(successAndErrorDetailsDto, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
-	
-	@ExceptionHandler({InvalidDetailListServiceIdException.class})
-	public ResponseEntity<Object> invalidDetailListServiceIdException(InvalidDetailListServiceIdException ex, WebRequest request) {
-		if(ex.getTransferType().equals(TransferType.ITEM_ATTRIBUTE_VALUE_SAVE)) {
-			ItemAddResource itemAddResource = validateItemAddResource(ex);
-			return new ResponseEntity<>(itemAddResource, HttpStatus.UNPROCESSABLE_ENTITY);
-		}else if(ex.getTransferType().equals(TransferType.ITEM_ATTRIBUTE_VALUE_UPDATE)) {
-			ItemUpdateResource itemUpdateResource = validateItemUpdateResource(ex);
-			return new ResponseEntity<>(itemUpdateResource, HttpStatus.UNPROCESSABLE_ENTITY);
-		}else {
-			return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
-	}
-	
-	private ItemAddResource validateItemAddResource(InvalidDetailListServiceIdException ex) {
-		ItemAddResource itemAddResources = new ItemAddResource();
-		List<ItemAttributeValueAddResource> itemAttributeValueAddResource=new ArrayList<>();
-		Integer index=ex.getIndex();
-		for(int i=0;i<=ex.getIndex();i++){  
-			itemAttributeValueAddResource.add(i, new ItemAttributeValueAddResource());
-		}
-		switch(ex.getServiceEntity()) 
-        {
-	        case ATTRIBUTE_VALUE_ID:
-	        	itemAttributeValueAddResource.get(index).setAttributeValueId(ex.getMessage());
-	            break;     
-            default:       	
-        }
-		itemAddResources.setItemAttributes(itemAttributeValueAddResource);
-		return itemAddResources;
-	}
-	
-	private ItemUpdateResource validateItemUpdateResource(InvalidDetailListServiceIdException ex) {
-		ItemUpdateResource itemUpdateResources = new ItemUpdateResource();
-		List<ItemAttributeValueUpdateResource> itemAttributeValueUpdateResource=new ArrayList<>();
-		Integer index=ex.getIndex();
-		for(int i=0;i<=ex.getIndex();i++){  
-			itemAttributeValueUpdateResource.add(i, new ItemAttributeValueUpdateResource());
-		}
-		switch(ex.getServiceEntity()) 
-        {
-	        case ID:
-	        	itemAttributeValueUpdateResource.get(index).setId(ex.getMessage());
-	            break;
-	        case ATTRIBUTE_VALUE_ID:
-	        	itemAttributeValueUpdateResource.get(index).setAttributeValueId(ex.getMessage());
-	            break;   
-            default:  	
-        }
-		itemUpdateResources.setItemAttributes(itemAttributeValueUpdateResource);
-		return itemUpdateResources;
 	}
 	
 }

@@ -19,5 +19,5 @@ public interface AttributeValueRepository extends MongoRepository<AttributeValue
 
 	public Optional<AttributeValue> findByIdAndStatus(int id, String name);
 	
-	public List<AttributeValue> findByAttributesId(Long id);
+	public List<AttributeValue> findByAttributesId(int id);
 }

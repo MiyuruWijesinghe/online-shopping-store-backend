@@ -18,16 +18,10 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.model.Brand;
 import com.spm.onlineshopping.model.Category;
 import com.spm.onlineshopping.model.Item;
-import com.spm.onlineshopping.model.ItemAttributeValue;
 import com.spm.onlineshopping.repository.BrandRepository;
 import com.spm.onlineshopping.repository.CategoryRepository;
-import com.spm.onlineshopping.repository.ItemAttributeValueRepository;
 import com.spm.onlineshopping.repository.ItemRepository;
-import com.spm.onlineshopping.resource.ItemAddResource;
-import com.spm.onlineshopping.resource.ItemAttributeValueAddResource;
-import com.spm.onlineshopping.resource.ItemAttributeValueUpdateResource;
-import com.spm.onlineshopping.resource.ItemUpdateResource;
-import com.spm.onlineshopping.service.ItemAttributeValueService;
+import com.spm.onlineshopping.resource.ItemResource;
 import com.spm.onlineshopping.service.ItemService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -46,12 +40,6 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Autowired
 	private BrandRepository brandRepository;
-	
-	@Autowired
-	private ItemAttributeValueService itemAttributeValueService;
-	
-	@Autowired
-	private ItemAttributeValueRepository itemAttributeValueRepository;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -78,11 +66,7 @@ public class ItemServiceImpl implements ItemService {
 	public Optional<Item> findById(int id) {
 		Optional<Item> isPresentItem = itemRepository.findById(id);
 		if(isPresentItem.isPresent()) {
-			Item item = isPresentItem.get();
-			List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
-			itemAttributeValues = itemAttributeValueRepository.findByItemsId(item.getId());
-			item.setItemAttributes(itemAttributeValues);
-			return isPresentItem;
+			return Optional.ofNullable(isPresentItem.get());
 		} else {
 			return Optional.empty();
 		}
@@ -92,11 +76,7 @@ public class ItemServiceImpl implements ItemService {
 	public Optional<Item> findByCode(String code) {
 		Optional<Item> isPresentItem = itemRepository.findByCode(code);
 		if(isPresentItem.isPresent()) {
-			Item item = isPresentItem.get();
-			List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
-			itemAttributeValues = itemAttributeValueRepository.findByItemsId(item.getId());
-			item.setItemAttributes(itemAttributeValues);
-			return isPresentItem;
+			return Optional.ofNullable(isPresentItem.get());
 		} else {
 			return Optional.empty();
 		}
@@ -104,60 +84,36 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Override
 	public List<Item> findByStatus(String status) {		
-		List<Item> itemss = itemRepository.findByStatus(status);
-		List<Item> itemList = new ArrayList<>();
-		List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
-		for(Item items : itemss) {
-			itemAttributeValues = itemAttributeValueRepository.findByItemsId(items.getId());
-			items.setItemAttributes(itemAttributeValues);
-			itemList.add(items);
-		}
-		return itemList;
+		return itemRepository.findByStatus(status);
 	}
 
 	@Override
 	public List<Item> findByName(String name) {
-		List<Item> itemss = itemRepository.findByNameContaining(name);
-		List<Item> itemList = new ArrayList<>();
-		List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
-		for(Item items : itemss) {
-			itemAttributeValues = itemAttributeValueRepository.findByItemsId(items.getId());
-			items.setItemAttributes(itemAttributeValues);
-			itemList.add(items);
-		}
-		return itemList;
+		return itemRepository.findByNameContaining(name);
 	}
 
 	@Override
-	public List<Item> findByCategoryIdAndStatus(Long categoryId, String status) {
-		List<Item> itemss = itemRepository.findByCategorysIdAndStatus(categoryId, status);
-		List<Item> itemList = new ArrayList<>();
-		List<ItemAttributeValue> itemAttributeValues = new ArrayList<>();
-		for(Item items : itemss) {
-			itemAttributeValues = itemAttributeValueRepository.findByItemsId(items.getId());
-			items.setItemAttributes(itemAttributeValues);
-			itemList.add(items);
-		}
-		return itemList;
+	public List<Item> findByCategoryIdAndStatus(int categoryId, String status) {
+		return itemRepository.findByCategorysIdAndStatus(categoryId, status);
 	}
 
 	@Override
-	public Integer saveItem(ItemAddResource itemAddResource) {
+	public Integer saveItem(ItemResource itemResource) {
 		Item item = new Item();
 		
-		Optional<Item> isPresentItem = itemRepository.findByCode(itemAddResource.getCode());
+		Optional<Item> isPresentItem = itemRepository.findByCode(itemResource.getCode());
         if (isPresentItem.isPresent()) {
         	throw new ValidateRecordException(environment.getProperty("code.duplicate"), "message");
 		}
 		
-        Optional<Category> category = categoryRepository.findByIdAndStatus(Integer.parseInt(itemAddResource.getCategoryId()), CommonStatus.ACTIVE.toString());
+        Optional<Category> category = categoryRepository.findByIdAndStatus(Integer.parseInt(itemResource.getCategoryId()), CommonStatus.ACTIVE.toString());
 		if (!category.isPresent()) {
 			throw new ValidateRecordException(environment.getProperty("category.invalid-value"), "message");
 		} else {
 			item.setCategorys(category.get());
 		}
 		
-		Optional<Brand> brand = brandRepository.findByIdAndStatus(Integer.parseInt(itemAddResource.getBrandId()), CommonStatus.ACTIVE.toString());
+		Optional<Brand> brand = brandRepository.findByIdAndStatus(Integer.parseInt(itemResource.getBrandId()), CommonStatus.ACTIVE.toString());
 		if (!brand.isPresent()) {
 			throw new ValidateRecordException(environment.getProperty("brand.invalid-value"), "message");
 		} else {
@@ -165,89 +121,67 @@ public class ItemServiceImpl implements ItemService {
 		}
         
 		item.setId(generateId());
-		item.setName(itemAddResource.getName());
-		item.setCode(itemAddResource.getCode());
-		item.setDescription(itemAddResource.getDescription());
-		item.setPrice(new BigDecimal(itemAddResource.getPrice()));
-		item.setDiscount(new BigDecimal(itemAddResource.getDiscount()));
-		item.setImageURL1(itemAddResource.getImageURL1());
-		item.setImageURL2(itemAddResource.getImageURL2());
-		item.setImageURL3(itemAddResource.getImageURL3());
-		item.setImageURL4(itemAddResource.getImageURL4());
-		item.setImageURL5(itemAddResource.getImageURL5());
-		item.setOutOfStock(itemAddResource.getOutOfStock());
-		item.setStatus(itemAddResource.getStatus());
+		item.setName(itemResource.getName());
+		item.setCode(itemResource.getCode());
+		item.setDescription(itemResource.getDescription());
+		item.setPrice(new BigDecimal(itemResource.getPrice()));
+		item.setDiscount(new BigDecimal(itemResource.getDiscount()));
+		item.setImageURL1(itemResource.getImageURL1());
+		item.setImageURL2(itemResource.getImageURL2());
+		item.setImageURL3(itemResource.getImageURL3());
+		item.setImageURL4(itemResource.getImageURL4());
+		item.setImageURL5(itemResource.getImageURL5());
+		item.setOutOfStock(itemResource.getOutOfStock());
+		item.setStatus(itemResource.getStatus());
         //category.setCreatedUser(authTokenFilter.getUsername());
 		item.setCreatedUser("MKW");
 		item.setCreatedDate(formatDate(new Date()));
-		
-		if(itemAddResource.getItemAttributes() !=null && !itemAddResource.getItemAttributes().isEmpty()) {
-			Integer index=0;
-			
-			for(ItemAttributeValueAddResource itemAttributeValueAddResource : itemAddResource.getItemAttributes()) {
-				
-				itemAttributeValueService.saveItemAttributeValue(item, itemAttributeValueAddResource, index);	
-				index++;
-			}			
-		}
-		
 		itemRepository.save(item);
 		return item.getId();
 	}
 
 	@Override
-	public Item updateItem(int id, ItemUpdateResource itemUpdateResource) {
+	public Item updateItem(int id, ItemResource itemResource) {
 		Optional<Item> isPresentItem = itemRepository.findById(id);
 		if (!isPresentItem.isPresent()) {
 			throw new NoRecordFoundException(environment.getProperty("common.record-not-found"));
 		}
 		
-		Optional<Item> isPresentItemByCode = itemRepository.findByCodeAndIdNotIn(itemUpdateResource.getCode(), id);
+		Optional<Item> isPresentItemByCode = itemRepository.findByCodeAndIdNotIn(itemResource.getCode(), id);
 		if (isPresentItemByCode.isPresent())
 			throw new ValidateRecordException(environment.getProperty("code.duplicate"), "message");
 		
 		Item item = isPresentItem.get();
 		
-		Optional<Category> category = categoryRepository.findByIdAndStatus(Integer.parseInt(itemUpdateResource.getCategoryId()), CommonStatus.ACTIVE.toString());
+		Optional<Category> category = categoryRepository.findByIdAndStatus(Integer.parseInt(itemResource.getCategoryId()), CommonStatus.ACTIVE.toString());
 		if (!category.isPresent()) {
 			throw new ValidateRecordException(environment.getProperty("category.invalid-value"), "message");
 		} else {
 			item.setCategorys(category.get());
 		}
 		
-		Optional<Brand> brand = brandRepository.findByIdAndStatus(Integer.parseInt(itemUpdateResource.getBrandId()), CommonStatus.ACTIVE.toString());
+		Optional<Brand> brand = brandRepository.findByIdAndStatus(Integer.parseInt(itemResource.getBrandId()), CommonStatus.ACTIVE.toString());
 		if (!brand.isPresent()) {
 			throw new ValidateRecordException(environment.getProperty("brand.invalid-value"), "message");
 		} else {
 			item.setBrands(brand.get());
 		}
 		
-		item.setName(itemUpdateResource.getName());
-		item.setCode(itemUpdateResource.getCode());
-		item.setDescription(itemUpdateResource.getDescription());
-		item.setPrice(new BigDecimal(itemUpdateResource.getPrice()));
-		item.setDiscount(new BigDecimal(itemUpdateResource.getDiscount()));
-		item.setImageURL1(itemUpdateResource.getImageURL1());
-		item.setImageURL2(itemUpdateResource.getImageURL2());
-		item.setImageURL3(itemUpdateResource.getImageURL3());
-		item.setImageURL4(itemUpdateResource.getImageURL4());
-		item.setImageURL5(itemUpdateResource.getImageURL5());
-		item.setOutOfStock(itemUpdateResource.getOutOfStock());
-		item.setStatus(itemUpdateResource.getStatus());
+		item.setName(itemResource.getName());
+		item.setCode(itemResource.getCode());
+		item.setDescription(itemResource.getDescription());
+		item.setPrice(new BigDecimal(itemResource.getPrice()));
+		item.setDiscount(new BigDecimal(itemResource.getDiscount()));
+		item.setImageURL1(itemResource.getImageURL1());
+		item.setImageURL2(itemResource.getImageURL2());
+		item.setImageURL3(itemResource.getImageURL3());
+		item.setImageURL4(itemResource.getImageURL4());
+		item.setImageURL5(itemResource.getImageURL5());
+		item.setOutOfStock(itemResource.getOutOfStock());
+		item.setStatus(itemResource.getStatus());
         //category.setModifedUser(authTokenFilter.getUsername());
 		item.setModifiedUser("MKW");
 		item.setModifiedDate(formatDate(new Date()));
-		
-		if(itemUpdateResource.getItemAttributes()!=null && !itemUpdateResource.getItemAttributes().isEmpty()) {
-			Integer index=0;
-			
-			for(ItemAttributeValueUpdateResource itemAttributeValueUpdateResource : itemUpdateResource.getItemAttributes()) {
-				
-				itemAttributeValueService.updateItemAttributeValue(item, itemAttributeValueUpdateResource, index);
-				index++;
-			}			
-		}
-		
 		itemRepository.save(item);
 		return item;
 	}

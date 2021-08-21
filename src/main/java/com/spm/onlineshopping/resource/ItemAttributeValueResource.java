@@ -5,8 +5,12 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ItemAttributeValueAddResource {
+public class ItemAttributeValueResource {
 
+	@NotBlank(message = "{common.not-null}")
+	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")
+    private String itemId;
+	
 	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")
     private String attributeValueId;
@@ -14,6 +18,14 @@ public class ItemAttributeValueAddResource {
 	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|ACTIVE|INACTIVE",message="{common-status.pattern}")
 	private String status;
+	
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
 
 	public String getAttributeValueId() {
 		return attributeValueId;
