@@ -83,7 +83,7 @@ public class AttributeValueServiceImpl implements AttributeValueService {
 	public Integer saveAttributeValue(AttributeValueResource attributeValueResource) {
 		AttributeValue attributeValue = new AttributeValue();
 		
-		Optional<AttributeValue> isPresentAttributeValue = attributeValueRepository.findByName(attributeValueResource.getName());
+		Optional<AttributeValue> isPresentAttributeValue = attributeValueRepository.findByAttributesIdAndName(Integer.parseInt(attributeValueResource.getAttributeId()), attributeValueResource.getName());
         if (isPresentAttributeValue.isPresent()) {
         	throw new ValidateRecordException(environment.getProperty("name.duplicate"), "message");
 		}
@@ -112,7 +112,7 @@ public class AttributeValueServiceImpl implements AttributeValueService {
 			throw new NoRecordFoundException(environment.getProperty("common.record-not-found"));
 		}
 		
-		Optional<AttributeValue> isPresentAttributeValueByName = attributeValueRepository.findByNameAndIdNotIn(attributeValueResource.getName(), id);
+		Optional<AttributeValue> isPresentAttributeValueByName = attributeValueRepository.findByAttributesIdAndNameAndIdNotIn(Integer.parseInt(attributeValueResource.getAttributeId()), attributeValueResource.getName(), id);
 		if (isPresentAttributeValueByName.isPresent())
 			throw new ValidateRecordException(environment.getProperty("name.duplicate"), "message");
 		

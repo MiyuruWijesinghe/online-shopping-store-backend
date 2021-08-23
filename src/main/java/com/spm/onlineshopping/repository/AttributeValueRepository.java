@@ -11,13 +11,13 @@ public interface AttributeValueRepository extends MongoRepository<AttributeValue
 
 	public List<AttributeValue> findByStatus(String status);
 
-	public Optional<AttributeValue> findByName(String name);
+	public Optional<AttributeValue> findByAttributesIdAndName(int attributeId, String name);
 	
 	public List<AttributeValue> findByNameContaining(String name);
 
-	public Optional<AttributeValue> findByNameAndIdNotIn(String name, int id);
+	public Optional<AttributeValue> findByAttributesIdAndNameAndIdNotIn(int attributeId, String name, int id);
 
 	public Optional<AttributeValue> findByIdAndStatus(int id, String name);
 	
-	public List<AttributeValue> findByAttributesId(int id);
+	public List<AttributeValue> findByAttributesId(int attributeId);
 }
