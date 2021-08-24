@@ -52,7 +52,7 @@ public class ItemResource {
 	private String imageURL5;
 	
 	@NotBlank(message = "{common.not-null}")
-	@Pattern(regexp = "^$|YER|NO",message="{indicator.pattern}")
+	@Pattern(regexp = "^$|YES|NO",message="{indicator.pattern}")
 	private String outOfStock;
 	
 	@NotBlank(message = "{common.not-null}")
