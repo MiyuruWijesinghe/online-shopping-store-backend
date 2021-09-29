@@ -12,8 +12,20 @@ import com.spm.onlineshopping.resource.SignupRequestResource;
 @Service
 public interface AuthService {
 
+	/**
+	 * Authenticate user.
+	 *
+	 * @param loginRequest the login request
+	 * @return the jwt response resource
+	 */
 	public JwtResponseResource authenticateUser(LoginRequestResource loginRequest);
 
+	/**
+	 * Register user.
+	 *
+	 * @param signUpRequest the sign up request
+	 * @return the users
+	 */
 	public Users registerUser(SignupRequestResource signUpRequest);
 
 }
