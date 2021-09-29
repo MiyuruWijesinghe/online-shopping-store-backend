@@ -16,6 +16,7 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.model.Attribute;
 import com.spm.onlineshopping.repository.AttributeRepository;
 import com.spm.onlineshopping.resource.AttributeResource;
+import com.spm.onlineshopping.security.jwt.AuthTokenFilter;
 import com.spm.onlineshopping.service.AttributeService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -28,6 +29,9 @@ public class AttributeServiceImpl implements AttributeService {
 	
 	@Autowired
 	private AttributeRepository attributeRepository;
+	
+	@Autowired
+	private AuthTokenFilter authTokenFilter;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,8 +86,7 @@ public class AttributeServiceImpl implements AttributeService {
         attribute.setId(generateId());
         attribute.setName(attributeResource.getName());
         attribute.setStatus(attributeResource.getStatus());
-        //category.setCreatedUser(authTokenFilter.getUsername());
-        attribute.setCreatedUser("MKW");
+        attribute.setCreatedUser(authTokenFilter.getUsername());
         attribute.setCreatedDate(formatDate(new Date()));
         attributeRepository.save(attribute);
 		return attribute.getId();
@@ -103,8 +106,7 @@ public class AttributeServiceImpl implements AttributeService {
 		Attribute attribute = isPresentAttribute.get();
 		attribute.setName(attributeResource.getName());
 		attribute.setStatus(attributeResource.getStatus());
-        //category.setModifedUser(authTokenFilter.getUsername());
-		attribute.setModifiedUser("MKW");
+        attribute.setModifiedUser(authTokenFilter.getUsername());
 		attribute.setModifiedDate(formatDate(new Date()));
 		attributeRepository.save(attribute);
 		return attribute;

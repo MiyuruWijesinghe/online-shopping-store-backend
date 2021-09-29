@@ -1,6 +1,7 @@
 package com.spm.onlineshopping.core;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -27,6 +28,9 @@ import com.spm.onlineshopping.resource.BrandResource;
 import com.spm.onlineshopping.resource.CategoryResource;
 import com.spm.onlineshopping.resource.ItemAttributeValueResource;
 import com.spm.onlineshopping.resource.ItemResource;
+import com.spm.onlineshopping.resource.OrdersAddResource;
+import com.spm.onlineshopping.resource.OrdersListResource;
+import com.spm.onlineshopping.resource.OrdersUpdateResource;
 import com.spm.onlineshopping.resource.SignupRequestResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.resource.ValidateResource;
@@ -145,6 +149,43 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.set(signupRequestResource.getClass().cast(signupRequestResource), error.getDefaultMessage());
 				}
 				return new ResponseEntity<>(signupRequestResource, HttpStatus.UNPROCESSABLE_ENTITY);
+			case "ordersAddResource": 
+				OrdersAddResource ordersAddResource = new OrdersAddResource();
+                for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+                    fieldName=error.getField();
+                    if(fieldName.startsWith("orders")) {
+                         fieldName=fieldName.replace("orders", "");
+                             atPoint = fieldName.indexOf(']');
+                             index=Integer.parseInt(fieldName.substring(1, atPoint));
+                             fieldName=fieldName.substring(atPoint+2);
+                             for (int i=0; i<=index; i++) {
+                                 if(ordersAddResource.getOrders()==null || ordersAddResource.getOrders().isEmpty()) {
+                                	 ordersAddResource.setOrders(new ArrayList<OrdersListResource>());
+                                	 ordersAddResource.getOrders().add(i, new OrdersListResource());
+                                 }else{
+                                     if((ordersAddResource.getOrders().size()-1)<i) {
+                                    	 ordersAddResource.getOrders().add(i, new OrdersListResource());
+                                     }
+                                 }
+                             }
+                             sField=ordersAddResource.getOrders().get(index).getClass().getDeclaredField(fieldName);
+                             sField.setAccessible(true);
+                             sField.set(ordersAddResource.getOrders().get(index), error.getDefaultMessage());
+                    }else {
+                        sField =  ordersAddResource.getClass().getDeclaredField(error.getField());
+                        sField.setAccessible(true);
+                        sField.set(ordersAddResource.getClass().cast(ordersAddResource), error.getDefaultMessage());
+                    }
+                }
+                return new ResponseEntity<>(ordersAddResource, HttpStatus.UNPROCESSABLE_ENTITY);	
+			case "ordersUpdateResource":
+				OrdersUpdateResource ordersUpdateResource = new OrdersUpdateResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = ordersUpdateResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(ordersUpdateResource.getClass().cast(ordersUpdateResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(ordersUpdateResource, HttpStatus.UNPROCESSABLE_ENTITY);	
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

@@ -22,6 +22,7 @@ import com.spm.onlineshopping.repository.BrandRepository;
 import com.spm.onlineshopping.repository.CategoryRepository;
 import com.spm.onlineshopping.repository.ItemRepository;
 import com.spm.onlineshopping.resource.ItemResource;
+import com.spm.onlineshopping.security.jwt.AuthTokenFilter;
 import com.spm.onlineshopping.service.ItemService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -40,6 +41,9 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Autowired
 	private BrandRepository brandRepository;
+	
+	@Autowired
+	private AuthTokenFilter authTokenFilter;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -133,8 +137,7 @@ public class ItemServiceImpl implements ItemService {
 		item.setImageURL5(itemResource.getImageURL5());
 		item.setOutOfStock(itemResource.getOutOfStock());
 		item.setStatus(itemResource.getStatus());
-        //category.setCreatedUser(authTokenFilter.getUsername());
-		item.setCreatedUser("MKW");
+		item.setCreatedUser(authTokenFilter.getUsername());
 		item.setCreatedDate(formatDate(new Date()));
 		itemRepository.save(item);
 		return item.getId();
@@ -179,8 +182,7 @@ public class ItemServiceImpl implements ItemService {
 		item.setImageURL5(itemResource.getImageURL5());
 		item.setOutOfStock(itemResource.getOutOfStock());
 		item.setStatus(itemResource.getStatus());
-        //category.setModifedUser(authTokenFilter.getUsername());
-		item.setModifiedUser("MKW");
+		item.setModifiedUser(authTokenFilter.getUsername());
 		item.setModifiedDate(formatDate(new Date()));
 		itemRepository.save(item);
 		return item;

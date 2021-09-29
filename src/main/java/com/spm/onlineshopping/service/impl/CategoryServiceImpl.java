@@ -14,6 +14,7 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.model.Category;
 import com.spm.onlineshopping.repository.CategoryRepository;
 import com.spm.onlineshopping.resource.CategoryResource;
+import com.spm.onlineshopping.security.jwt.AuthTokenFilter;
 import com.spm.onlineshopping.service.CategoryService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -27,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-	/*@Autowired
-	private AuthTokenFilter authTokenFilter;*/
+	@Autowired
+	private AuthTokenFilter authTokenFilter;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,8 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDescription(categoryResource.getDescription());
         category.setImageURL(categoryResource.getImageURL());
         category.setStatus(categoryResource.getStatus());
-        //category.setCreatedUser(authTokenFilter.getUsername());
-        category.setCreatedUser("MKW");
+        category.setCreatedUser(authTokenFilter.getUsername());
         category.setCreatedDate(formatDate(new Date()));
         categoryRepository.save(category);
 		return category.getId();
@@ -108,8 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setDescription(categoryResource.getDescription());
         category.setImageURL(categoryResource.getImageURL());
         category.setStatus(categoryResource.getStatus());
-        //category.setModifedUser(authTokenFilter.getUsername());
-        category.setModifiedUser("MKW");
+        category.setModifiedUser(authTokenFilter.getUsername());
         category.setModifiedDate(formatDate(new Date()));
         categoryRepository.save(category);
 		return category;
