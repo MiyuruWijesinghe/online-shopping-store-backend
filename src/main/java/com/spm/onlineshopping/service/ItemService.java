@@ -10,6 +10,7 @@ import com.spm.onlineshopping.resource.ItemResource;
 
 @Service
 public interface ItemService {
+	
 
 	public List<Item> findAll();
 	
