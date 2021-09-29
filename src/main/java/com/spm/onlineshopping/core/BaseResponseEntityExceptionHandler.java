@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import com.spm.onlineshopping.exception.CodeUniqueException;
 import com.spm.onlineshopping.exception.InvalidServiceIdException;
 import com.spm.onlineshopping.exception.NoRecordFoundException;
@@ -26,6 +27,7 @@ import com.spm.onlineshopping.resource.BrandResource;
 import com.spm.onlineshopping.resource.CategoryResource;
 import com.spm.onlineshopping.resource.ItemAttributeValueResource;
 import com.spm.onlineshopping.resource.ItemResource;
+import com.spm.onlineshopping.resource.SignupRequestResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.resource.ValidateResource;
 
@@ -135,6 +137,14 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.set(itemAttributeValueResource.getClass().cast(itemAttributeValueResource), error.getDefaultMessage());
 				}
 				return new ResponseEntity<>(itemAttributeValueResource, HttpStatus.UNPROCESSABLE_ENTITY);	
+			case "signupRequestResource":
+				SignupRequestResource signupRequestResource = new SignupRequestResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = signupRequestResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(signupRequestResource.getClass().cast(signupRequestResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(signupRequestResource, HttpStatus.UNPROCESSABLE_ENTITY);
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
