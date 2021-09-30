@@ -16,6 +16,7 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.model.Brand;
 import com.spm.onlineshopping.repository.BrandRepository;
 import com.spm.onlineshopping.resource.BrandResource;
+import com.spm.onlineshopping.security.jwt.AuthTokenFilter;
 import com.spm.onlineshopping.service.BrandService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -28,6 +29,9 @@ public class BrandServiceImpl implements BrandService {
 	
 	@Autowired
 	private BrandRepository brandRepository;
+	
+	@Autowired
+	private AuthTokenFilter authTokenFilter;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -83,8 +87,7 @@ public class BrandServiceImpl implements BrandService {
         brand.setName(brandResource.getName());
         brand.setImageURL(brandResource.getImageURL());
         brand.setStatus(brandResource.getStatus());
-        //category.setCreatedUser(authTokenFilter.getUsername());
-        brand.setCreatedUser("MKW");
+        brand.setCreatedUser(authTokenFilter.getUsername());
         brand.setCreatedDate(formatDate(new Date()));
         brandRepository.save(brand);
 		return brand.getId();
@@ -105,8 +108,7 @@ public class BrandServiceImpl implements BrandService {
 		brand.setName(brandResource.getName());
 		brand.setImageURL(brandResource.getImageURL());
         brand.setStatus(brandResource.getStatus());
-        //category.setModifedUser(authTokenFilter.getUsername());
-        brand.setModifiedUser("MKW");
+        brand.setModifiedUser(authTokenFilter.getUsername());
         brand.setModifiedDate(formatDate(new Date()));
         brandRepository.save(brand);
 		return brand;

@@ -21,6 +21,7 @@ import com.spm.onlineshopping.repository.AttributeValueRepository;
 import com.spm.onlineshopping.repository.ItemAttributeValueRepository;
 import com.spm.onlineshopping.repository.ItemRepository;
 import com.spm.onlineshopping.resource.ItemAttributeValueResource;
+import com.spm.onlineshopping.security.jwt.AuthTokenFilter;
 import com.spm.onlineshopping.service.ItemAttributeValueService;
 import com.spm.onlineshopping.util.IdGenerator;
 
@@ -39,6 +40,9 @@ public class ItemAttributeValueServiceImpl implements ItemAttributeValueService 
 	
 	@Autowired
 	private AttributeValueRepository attributeValueRepository;
+	
+	@Autowired
+	private AuthTokenFilter authTokenFilter;
 	
 	private String formatDate(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -106,8 +110,7 @@ public class ItemAttributeValueServiceImpl implements ItemAttributeValueService 
         
 		itemAttributeValue.setId(generateId());
 		itemAttributeValue.setStatus(itemAttributeValueResource.getStatus());
-        //category.setCreatedUser(authTokenFilter.getUsername());
-		itemAttributeValue.setCreatedUser("MKW");
+		itemAttributeValue.setCreatedUser(authTokenFilter.getUsername());
 		itemAttributeValue.setCreatedDate(formatDate(new Date()));
 		itemAttributeValueRepository.save(itemAttributeValue);
 		
@@ -143,8 +146,7 @@ public class ItemAttributeValueServiceImpl implements ItemAttributeValueService 
 		}
 		
 		itemAttributeValue.setStatus(itemAttributeValueResource.getStatus());
-        //category.setModifedUser(authTokenFilter.getUsername());
-		itemAttributeValue.setModifiedUser("MKW");
+		itemAttributeValue.setModifiedUser(authTokenFilter.getUsername());
 		itemAttributeValue.setModifiedDate(formatDate(new Date()));
 		itemAttributeValueRepository.save(itemAttributeValue);
 		

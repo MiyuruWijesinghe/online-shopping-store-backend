@@ -26,12 +26,11 @@ import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.service.AuthService;
 
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	
+
 	@Autowired
 	private Environment environment;
 	
@@ -50,12 +49,24 @@ public class AuthController {
 		}
 	}
 
+	/**
+	 * Authenticate user.
+	 *
+	 * @param loginRequest the login request
+	 * @return the response entity
+	 */
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestResource loginRequest) {
 		JwtResponseResource jwtResponseResource = authService.authenticateUser(loginRequest);
 		return new ResponseEntity<>(jwtResponseResource,HttpStatus.CREATED);
 	}
 
+	/**
+	 * Register user.
+	 *
+	 * @param signUpRequest the sign up request
+	 * @return the response entity
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequestResource signUpRequest) {
 		
