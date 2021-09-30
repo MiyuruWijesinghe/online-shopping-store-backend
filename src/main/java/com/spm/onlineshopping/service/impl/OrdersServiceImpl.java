@@ -17,6 +17,7 @@ import com.spm.onlineshopping.exception.NoRecordFoundException;
 import com.spm.onlineshopping.model.Item;
 import com.spm.onlineshopping.model.Orders;
 import com.spm.onlineshopping.model.Users;
+import com.spm.onlineshopping.repository.CartRepository;
 import com.spm.onlineshopping.repository.ItemRepository;
 import com.spm.onlineshopping.repository.OrdersRepository;
 import com.spm.onlineshopping.repository.UserRepository;
@@ -42,6 +43,9 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private CartRepository cartRepository;
 	
 	@Autowired
 	private AuthTokenFilter authTokenFilter;
@@ -141,6 +145,9 @@ public class OrdersServiceImpl implements OrdersService {
 			orders.setCreatedDate(formatDate(new Date()));
 			ordersRepository.save(orders);
 		}
+		
+		//Delete from cart
+		cartRepository.deleteAllByUsersUsernameAndStatus(username, CommonStatus.ACTIVE.toString());
 		
 		return refCode;
 	}

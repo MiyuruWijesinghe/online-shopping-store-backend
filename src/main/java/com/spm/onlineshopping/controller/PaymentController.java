@@ -1,5 +1,7 @@
 package com.spm.onlineshopping.controller;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import javax.validation.Valid;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spm.onlineshopping.resource.PaymentRequestResource;
+import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
+import com.spm.onlineshopping.model.Brand;
+import com.spm.onlineshopping.model.Payment;
 import com.spm.onlineshopping.resource.MessageResponseResource;
 import com.spm.onlineshopping.service.PaymentService;
 
@@ -35,21 +40,6 @@ public class PaymentController {
 	@Autowired
 	private PaymentService paymentService;
 	
-	/**
-	 * Gets the delevery status by id.
-	 *
-	 * @param cardNO the card NO
-	 * @return the delevery status by id
-	 */
-	@GetMapping(value = "/validate/{cardNO}")
-	public ResponseEntity<Object> getDeleveryStatusById(@PathVariable(value = "id", required = true) Long cardNO){
-		MessageResponseResource responseMessage = new MessageResponseResource();
-		String[] names = { "VALID", "INVALID" };
-		String name = names[(int) (Math.random() * names.length)];
-		responseMessage.setStatus(name);
-		return new ResponseEntity<>(responseMessage,HttpStatus.OK);
-	}
-	
 
 	/**
 	 * Pay.
@@ -63,6 +53,18 @@ public class PaymentController {
 		MessageResponseResource responseMessage = new MessageResponseResource(environment.getProperty("payment.sucess"));
 		responseMessage.setRefrenceNo(refNo);
 		return new ResponseEntity<>(responseMessage,HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/all")
+	public ResponseEntity<Object> getAllPayment() {
+		SuccessAndErrorDetailsResource responseMessage = new SuccessAndErrorDetailsResource();
+		List<Payment> payments = paymentService.findAll();
+		if (!payments.isEmpty()) {
+			return new ResponseEntity<>((Collection<Payment>) payments, HttpStatus.OK);
+		} else {
+			responseMessage.setMessages(environment.getProperty("common.record-not-found"));
+			return new ResponseEntity<>(responseMessage, HttpStatus.NO_CONTENT);
+		}
 	}
 
 }
