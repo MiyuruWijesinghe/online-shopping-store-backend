@@ -1,5 +1,6 @@
 package com.spm.onlineshopping.service.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,6 +101,7 @@ public class CartServiceImpl implements CartService {
 		for(CartListResource cartObject : cartAddResource.getCartItems()) {
 			cart.setId(generateId());
 			cart.setStatus(CommonStatus.ACTIVE.toString());
+			cart.setQuantity(Long.parseLong(cartObject.getQuantity()));
 			
 			Optional<Users> users = userRepository.findByUsername(username);
 			if (users.isPresent()) {
@@ -109,9 +111,12 @@ public class CartServiceImpl implements CartService {
 			Optional<Item> item = itemRepository.findByIdAndStatus(Integer.parseInt(cartObject.getItemId()), CommonStatus.ACTIVE.toString());
 			if (item.isPresent()) {
 				cart.setItems(item.get());
+				cart.setPrice(item.get().getPrice());
+				cart.setDiscount(item.get().getDiscount());
+				cart.setNetAmount(calculateNetAmount(item.get().getPrice(), item.get().getDiscount()));
+				cart.setSubTotal(calculateSubTotal(cart.getNetAmount(), cart.getQuantity()));
 			}
 			
-			cart.setQuantity(Long.parseLong(cartObject.getQuantity()));
 			cart.setCreatedDate(formatDate(new Date()));
 			cartRepository.save(cart);
 		}
@@ -119,6 +124,14 @@ public class CartServiceImpl implements CartService {
 		return "Item added to cart.";
 	}
 
+	private BigDecimal calculateNetAmount(BigDecimal price, BigDecimal discount) {
+		return price.subtract(discount);
+	}
+	
+	private BigDecimal calculateSubTotal(BigDecimal netAmount, Long quantity) {
+		return netAmount.multiply(new BigDecimal(quantity));
+	}
+	
 	@Override
 	public String deleteCart(int id) {
 		Optional<Cart> isPresentCart = cartRepository.findById(id);
@@ -128,6 +141,5 @@ public class CartServiceImpl implements CartService {
 		cartRepository.deleteById(id);
 		return environment.getProperty("cart-item.deleted");
 	}
-
 	
 }
