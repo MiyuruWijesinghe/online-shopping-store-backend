@@ -31,6 +31,7 @@ import com.spm.onlineshopping.resource.ItemResource;
 import com.spm.onlineshopping.resource.OrdersAddResource;
 import com.spm.onlineshopping.resource.OrdersListResource;
 import com.spm.onlineshopping.resource.OrdersUpdateResource;
+import com.spm.onlineshopping.resource.PaymentRequestResource;
 import com.spm.onlineshopping.resource.SignupRequestResource;
 import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.resource.ValidateResource;
@@ -186,6 +187,14 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.set(ordersUpdateResource.getClass().cast(ordersUpdateResource), error.getDefaultMessage());
 				}
 				return new ResponseEntity<>(ordersUpdateResource, HttpStatus.UNPROCESSABLE_ENTITY);	
+			case "paymentRequestResource":
+				PaymentRequestResource paymentRequestResource = new PaymentRequestResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = paymentRequestResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(paymentRequestResource.getClass().cast(paymentRequestResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(paymentRequestResource, HttpStatus.UNPROCESSABLE_ENTITY);
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
