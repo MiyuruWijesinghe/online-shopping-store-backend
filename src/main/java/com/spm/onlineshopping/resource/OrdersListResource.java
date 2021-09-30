@@ -9,27 +9,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class OrdersListResource {
 
 	@NotBlank(message = "{common.not-null}")
-	private String userName;
-	
-	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")	
     private String itemId;
 	
 	@NotBlank(message = "{common.not-null}")
 	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")	
     private String quantity;
-	
-	@NotBlank(message = "{common.not-null}")
-	@Pattern(regexp = "^$|\\d{1,20}\\.\\d{1,2}$",message="{common-amount.pattern}")
-	private String deliveryCharge;
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 
 	public String getItemId() {
 		return itemId;
@@ -45,14 +30,6 @@ public class OrdersListResource {
 
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
-	}
-
-	public String getDeliveryCharge() {
-		return deliveryCharge;
-	}
-
-	public void setDeliveryCharge(String deliveryCharge) {
-		this.deliveryCharge = deliveryCharge;
 	}
 	
 }

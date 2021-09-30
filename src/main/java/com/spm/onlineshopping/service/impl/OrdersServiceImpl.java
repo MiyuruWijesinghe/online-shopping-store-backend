@@ -118,13 +118,15 @@ public class OrdersServiceImpl implements OrdersService {
 		Orders orders = new Orders();
 		
 		String refCode = "RF"+generateRefNo();
+		String username = ordersAddResource.getUserName();
+		String deliveryCharge = ordersAddResource.getDeliveryCharge();
 		
 		for(OrdersListResource orderObject : ordersAddResource.getOrders()) {
 			orders.setId(generateId());
 			orders.setStatus(CommonStatus.ACTIVE.toString());
 			orders.setReferenceCode(refCode);
 			
-			Optional<Users> users = userRepository.findByUsername(orderObject.getUserName());
+			Optional<Users> users = userRepository.findByUsername(username);
 			if (users.isPresent()) {
 				orders.setUsers(users.get());
 			}
@@ -135,7 +137,7 @@ public class OrdersServiceImpl implements OrdersService {
 			}
 			
 			orders.setQuantity(Long.parseLong(orderObject.getQuantity()));
-			orders.setDeliveryCharge(new BigDecimal(orderObject.getDeliveryCharge()));
+			orders.setDeliveryCharge(new BigDecimal(deliveryCharge));
 			orders.setCreatedDate(formatDate(new Date()));
 			ordersRepository.save(orders);
 		}
@@ -154,7 +156,6 @@ public class OrdersServiceImpl implements OrdersService {
 			orders.setModifiedUser(authTokenFilter.getUsername());
 			ordersRepository.save(orders);
 		}
-		
 		
 		return null;
 	}
