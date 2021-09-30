@@ -111,6 +111,16 @@ public class AuthServiceImpl implements AuthService {
 		return user;
 		
 	}
+	
+	@Override
+	public Optional<Users> findByUserName(String username) {
+		Optional<Users> user = userRepository.findByUsername(username);
+		if(user.isPresent()) {
+			return Optional.ofNullable(user.get());
+		} else {
+			return Optional.empty();
+		}
+	}
 		
 		
 		

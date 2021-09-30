@@ -1,6 +1,8 @@
 package com.spm.onlineshopping.controller;
 
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,7 @@ import com.spm.onlineshopping.resource.JwtResponseResource;
 import com.spm.onlineshopping.resource.LoginRequestResource;
 import com.spm.onlineshopping.resource.MessageResponseResource;
 import com.spm.onlineshopping.resource.SignupRequestResource;
+import com.spm.onlineshopping.resource.SuccessAndErrorDetailsResource;
 import com.spm.onlineshopping.service.AuthService;
 
 
@@ -32,6 +37,18 @@ public class AuthController {
 	
 	@Autowired
 	AuthService authService;
+	
+	@GetMapping(value = "/buyer/{username}")
+	public ResponseEntity<Object> getBuyerByUserName(@PathVariable(value = "username", required = true) String username) {
+		SuccessAndErrorDetailsResource responsemessage = new SuccessAndErrorDetailsResource();
+		Optional<Users> isPresentUser = authService.findByUserName(username);
+		if(isPresentUser.isPresent()) {
+			return new ResponseEntity<>(isPresentUser, HttpStatus.OK);
+		} else {
+			responsemessage.setMessages(environment.getProperty("common.record-not-found"));
+			return new ResponseEntity<>(responsemessage, HttpStatus.NO_CONTENT);
+		}
+	}
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestResource loginRequest) {

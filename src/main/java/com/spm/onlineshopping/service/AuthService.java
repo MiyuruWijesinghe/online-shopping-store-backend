@@ -1,5 +1,7 @@
 package com.spm.onlineshopping.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.spm.onlineshopping.model.Users;
@@ -15,5 +17,7 @@ public interface AuthService {
 	public JwtResponseResource authenticateUser(LoginRequestResource loginRequest);
 
 	public Users registerUser(SignupRequestResource signUpRequest);
+	
+	public Optional<Users> findByUserName(String username);
 
 }
