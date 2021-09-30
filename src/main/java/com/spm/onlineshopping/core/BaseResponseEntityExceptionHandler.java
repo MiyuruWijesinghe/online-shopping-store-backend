@@ -25,6 +25,8 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.resource.AttributeResource;
 import com.spm.onlineshopping.resource.AttributeValueResource;
 import com.spm.onlineshopping.resource.BrandResource;
+import com.spm.onlineshopping.resource.CartAddResource;
+import com.spm.onlineshopping.resource.CartListResource;
 import com.spm.onlineshopping.resource.CategoryResource;
 import com.spm.onlineshopping.resource.ItemAttributeValueResource;
 import com.spm.onlineshopping.resource.ItemResource;
@@ -195,6 +197,35 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
 					sField.set(paymentRequestResource.getClass().cast(paymentRequestResource), error.getDefaultMessage());
 				}
 				return new ResponseEntity<>(paymentRequestResource, HttpStatus.UNPROCESSABLE_ENTITY);
+			case "cartAddResource": 
+				CartAddResource cartAddResource = new CartAddResource();
+                for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+                    fieldName=error.getField();
+                    if(fieldName.startsWith("cartItems")) {
+                         fieldName=fieldName.replace("cartItems", "");
+                             atPoint = fieldName.indexOf(']');
+                             index=Integer.parseInt(fieldName.substring(1, atPoint));
+                             fieldName=fieldName.substring(atPoint+2);
+                             for (int i=0; i<=index; i++) {
+                                 if(cartAddResource.getCartItems()==null || cartAddResource.getCartItems().isEmpty()) {
+                                	 cartAddResource.setCartItems(new ArrayList<CartListResource>());
+                                	 cartAddResource.getCartItems().add(i, new CartListResource());
+                                 }else{
+                                     if((cartAddResource.getCartItems().size()-1)<i) {
+                                    	 cartAddResource.getCartItems().add(i, new CartListResource());
+                                     }
+                                 }
+                             }
+                             sField=cartAddResource.getCartItems().get(index).getClass().getDeclaredField(fieldName);
+                             sField.setAccessible(true);
+                             sField.set(cartAddResource.getCartItems().get(index), error.getDefaultMessage());
+                    }else {
+                        sField =  cartAddResource.getClass().getDeclaredField(error.getField());
+                        sField.setAccessible(true);
+                        sField.set(cartAddResource.getClass().cast(cartAddResource), error.getDefaultMessage());
+                    }
+                }
+                return new ResponseEntity<>(cartAddResource, HttpStatus.UNPROCESSABLE_ENTITY);
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
