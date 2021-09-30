@@ -23,7 +23,7 @@ public class PaymentRequestResource {
 	private String cvCode;
 	
 	@NotBlank(message = "{common.not-null}")
-	@Size(min = 2, max = 2, message = "{card-year.size}")
+	@Size(min = 4, max = 4, message = "{card-year.size}")
 	@Pattern(regexp = "^$|[0-9]+", message = "{common-numeric.pattern}")
 	private String year;
 	
