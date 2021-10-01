@@ -18,11 +18,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spm.onlineshopping.enums.CommonStatus;
+import com.spm.onlineshopping.exception.NoRecordFoundException;
 import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.model.Roles;
 import com.spm.onlineshopping.model.Users;
 import com.spm.onlineshopping.repository.RolesRepository;
 import com.spm.onlineshopping.repository.UserRepository;
+import com.spm.onlineshopping.resource.BuyerUpdateResource;
 import com.spm.onlineshopping.resource.JwtResponseResource;
 import com.spm.onlineshopping.resource.LoginRequestResource;
 import com.spm.onlineshopping.resource.SignupRequestResource;
@@ -122,7 +124,28 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 		
+	@Override
+	public Users updateBuyer(String username, BuyerUpdateResource buyerUpdateResource) {
+		Optional<Users> isPresentBuyer = userRepository.findByUsername(username);
+		if(!isPresentBuyer.isPresent()) {
+			throw new NoRecordFoundException(environment.getProperty("common.record-not-found"));
+		}
 		
+		Users user = isPresentBuyer.get();
+		user.setFirstName(buyerUpdateResource.getFirstName());
+		user.setLastName(buyerUpdateResource.getLastName());
+		user.setDob(buyerUpdateResource.getDob());
+		user.setNic(buyerUpdateResource.getNic());
+		user.setUsername(buyerUpdateResource.getUsername());
+		user.setAddressLine1(buyerUpdateResource.getAddressLine1());
+		user.setAddressLine2(buyerUpdateResource.getAddressLine2());
+		user.setAddressLine3(buyerUpdateResource.getAddressLine3());
+		user.setEmail(buyerUpdateResource.getEmail());
+		user.setPhoneNumber(buyerUpdateResource.getPhoneNumber());
+		user.setStatus(CommonStatus.ACTIVE.toString());
+		userRepository.save(user);
+		return user;
+	}
 		
 		
 		

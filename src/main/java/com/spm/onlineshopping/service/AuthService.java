@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.spm.onlineshopping.model.Users;
+import com.spm.onlineshopping.resource.BuyerUpdateResource;
 import com.spm.onlineshopping.resource.JwtResponseResource;
 import com.spm.onlineshopping.resource.LoginRequestResource;
 import com.spm.onlineshopping.resource.SignupRequestResource;
@@ -31,5 +32,7 @@ public interface AuthService {
 	public Users registerUser(SignupRequestResource signUpRequest);
 	
 	public Optional<Users> findByUserName(String username);
+	
+	public Users updateBuyer(String username, BuyerUpdateResource buyerUpdateResource);
 
 }

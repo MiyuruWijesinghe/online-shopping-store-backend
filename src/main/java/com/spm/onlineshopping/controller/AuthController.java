@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spm.onlineshopping.model.Users;
+import com.spm.onlineshopping.resource.BuyerUpdateResource;
 import com.spm.onlineshopping.resource.JwtResponseResource;
 import com.spm.onlineshopping.resource.LoginRequestResource;
 import com.spm.onlineshopping.resource.MessageResponseResource;
@@ -37,6 +39,12 @@ public class AuthController {
 	@Autowired
 	AuthService authService;
 	
+	/**
+	 * Gets the buyer by username.
+	 * 
+	 * @param username
+	 * @return
+	 */
 	@GetMapping(value = "/buyer/{username}")
 	public ResponseEntity<Object> getBuyerByUserName(@PathVariable(value = "username", required = true) String username) {
 		SuccessAndErrorDetailsResource responsemessage = new SuccessAndErrorDetailsResource();
@@ -47,6 +55,14 @@ public class AuthController {
 			responsemessage.setMessages(environment.getProperty("common.record-not-found"));
 			return new ResponseEntity<>(responsemessage, HttpStatus.NO_CONTENT);
 		}
+	}
+	
+	@PutMapping(value = "/buyer/{username}")
+	public ResponseEntity<Object> updateBuyer(@PathVariable(value = "username", required = true) String username, 
+			@Valid @RequestBody BuyerUpdateResource buyerUpdateResource) {
+		Users user = authService.updateBuyer(username, buyerUpdateResource);
+		SuccessAndErrorDetailsResource responsemessage = new SuccessAndErrorDetailsResource(environment.getProperty("common.updated"), user);
+		return new ResponseEntity<>(responsemessage, HttpStatus.OK);
 	}
 
 	/**
