@@ -2,6 +2,8 @@ package com.spm.onlineshopping.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Transient;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -28,6 +30,73 @@ public class Orders {
 	private String modifiedUser;
 	
 	private String modifiedDate;
+	
+	@Transient
+	private String categoryName;
+	
+	@Transient
+	private String brandName;
+	
+	@Transient
+	private String itemName;
+	
+	@Transient
+	private BigDecimal itemPrice;
+	
+	@Transient
+	private BigDecimal itemDiscount;
+	
+	@Transient
+	private String itemImage;
+	
+
+	public String getCategoryName() {
+		if(items != null) {
+			return items.getCategoryName();
+		} else {
+			return null;
+		}
+	}
+
+	public String getBrandName() {
+		if(items != null) {
+			return items.getBrandName();
+		} else {
+			return null;
+		}
+	}
+
+	public String getItemName() {
+		if(items != null) {
+			return items.getName();
+		} else {
+			return null;
+		}
+	}
+
+	public BigDecimal getItemPrice() {
+		if(items != null) {
+			return items.getPrice();
+		} else {
+			return null;
+		}
+	}
+
+	public BigDecimal getItemDiscount() {
+		if(items != null) {
+			return items.getDiscount();
+		} else {
+			return null;
+		}
+	}
+
+	public String getItemImage() {
+		if(items != null) {
+			return items.getImageURL1();
+		} else {
+			return null;
+		}
+	}
 
 	public Integer getId() {
 		return id;
