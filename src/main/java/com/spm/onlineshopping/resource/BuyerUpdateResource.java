@@ -42,6 +42,16 @@ public class BuyerUpdateResource {
     
 	@NotBlank(message = "{common.not-null}")
 	private String nic;
+	
+	private String userImage;
+
+	public String getUserImage() {
+		return userImage;
+	}
+
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
+	}
 
 	public String getFirstName() {
 		return firstName;

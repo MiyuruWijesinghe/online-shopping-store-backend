@@ -137,6 +137,7 @@ public class AuthServiceImpl implements AuthService {
 		user.setDob(buyerUpdateResource.getDob());
 		user.setNic(buyerUpdateResource.getNic());
 		user.setUsername(buyerUpdateResource.getUsername());
+		user.setUserImage(buyerUpdateResource.getUserImage());
 		user.setAddressLine1(buyerUpdateResource.getAddressLine1());
 		user.setAddressLine2(buyerUpdateResource.getAddressLine2());
 		user.setAddressLine3(buyerUpdateResource.getAddressLine3());
