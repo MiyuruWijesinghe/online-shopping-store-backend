@@ -1,5 +1,7 @@
 package com.spm.onlineshopping.model;
 
+import java.math.BigDecimal;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,6 +16,14 @@ public class Cart {
 	private Item items;
 	
 	private Long quantity;
+	
+	private BigDecimal price;
+	
+	private BigDecimal discount;
+	
+	private BigDecimal netAmount;
+	
+	private BigDecimal subTotal;
 	
 	private String status;
 	
@@ -49,6 +59,38 @@ public class Cart {
 
 	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public BigDecimal getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(BigDecimal discount) {
+		this.discount = discount;
+	}
+
+	public BigDecimal getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(BigDecimal netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
 	}
 
 	public String getStatus() {
