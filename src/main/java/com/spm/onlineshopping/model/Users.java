@@ -45,14 +45,6 @@ public class Users implements Serializable {
 	private String dob;
 	
 	private String userImage;
-	
-	public String getUserImage() {
-		return userImage;
-	}
-
-	public void setUserImage(String userImage) {
-		this.userImage = userImage;
-	}
 
 	@NotBlank
 	@Size(max = 20)
@@ -192,5 +184,13 @@ public class Users implements Serializable {
 
 	public void setDob(String dob) {
 		this.dob = dob;
+	}
+	
+	public String getUserImage() {
+		return userImage;
+	}
+
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
 	}
 }

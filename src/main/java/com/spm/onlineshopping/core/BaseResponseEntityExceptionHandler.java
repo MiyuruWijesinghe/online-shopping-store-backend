@@ -25,6 +25,7 @@ import com.spm.onlineshopping.exception.ValidateRecordException;
 import com.spm.onlineshopping.resource.AttributeResource;
 import com.spm.onlineshopping.resource.AttributeValueResource;
 import com.spm.onlineshopping.resource.BrandResource;
+import com.spm.onlineshopping.resource.BuyerUpdateResource;
 import com.spm.onlineshopping.resource.CartAddResource;
 import com.spm.onlineshopping.resource.CartListResource;
 import com.spm.onlineshopping.resource.CategoryResource;
@@ -226,6 +227,14 @@ public class BaseResponseEntityExceptionHandler extends ResponseEntityExceptionH
                     }
                 }
                 return new ResponseEntity<>(cartAddResource, HttpStatus.UNPROCESSABLE_ENTITY);
+			case "buyerUpdateResource":
+				BuyerUpdateResource buyerUpdateResource = new BuyerUpdateResource();
+				for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+					sField = buyerUpdateResource.getClass().getDeclaredField(error.getField());
+					sField.setAccessible(true);
+					sField.set(buyerUpdateResource.getClass().cast(buyerUpdateResource), error.getDefaultMessage());
+				}
+				return new ResponseEntity<>(buyerUpdateResource, HttpStatus.UNPROCESSABLE_ENTITY);
 				
 			default:
 				return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

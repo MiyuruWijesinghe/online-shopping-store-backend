@@ -61,7 +61,7 @@ public class AuthController {
 	public ResponseEntity<Object> updateBuyer(@PathVariable(value = "username", required = true) String username, 
 			@Valid @RequestBody BuyerUpdateResource buyerUpdateResource) {
 		Users user = authService.updateBuyer(username, buyerUpdateResource);
-		SuccessAndErrorDetailsResource responsemessage = new SuccessAndErrorDetailsResource(environment.getProperty("common.updated"), user);
+		SuccessAndErrorDetailsResource responsemessage = new SuccessAndErrorDetailsResource(environment.getProperty("common.updated"));
 		return new ResponseEntity<>(responsemessage, HttpStatus.OK);
 	}
 

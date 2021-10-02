@@ -54,6 +54,8 @@ public class SignupRequestResource {
     
 	@NotBlank(message = "{common.not-null}")
 	private String nic;
+	
+	private String userImage;
   
 //    public String getUsername() {
 //        return username;
@@ -165,6 +167,14 @@ public class SignupRequestResource {
 
 	public void setNic(String nic) {
 		this.nic = nic;
+	}
+
+	public String getUserImage() {
+		return userImage;
+	}
+
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
 	}
 
 
