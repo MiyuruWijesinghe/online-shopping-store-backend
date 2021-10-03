@@ -138,6 +138,10 @@ public class OrdersServiceImpl implements OrdersService {
 			Optional<Item> item = itemRepository.findByIdAndStatus(Integer.parseInt(orderObject.getItemId()), CommonStatus.ACTIVE.toString());
 			if (item.isPresent()) {
 				orders.setItems(item.get());
+				orders.setPrice(item.get().getPrice());
+				orders.setDiscount(item.get().getDiscount());
+				orders.setNetAmount(calculateNetAmount(item.get().getPrice(), item.get().getDiscount()));
+				orders.setSubTotal(calculateSubTotal(orders.getNetAmount(), orders.getQuantity()));
 			}
 			
 			orders.setQuantity(Long.parseLong(orderObject.getQuantity()));
@@ -150,6 +154,14 @@ public class OrdersServiceImpl implements OrdersService {
 		cartRepository.deleteAllByUsersUsernameAndStatus(username, CommonStatus.ACTIVE.toString());
 		
 		return refCode;
+	}
+	
+	private BigDecimal calculateNetAmount(BigDecimal price, BigDecimal discount) {
+		return price.subtract(discount);
+	}
+	
+	private BigDecimal calculateSubTotal(BigDecimal netAmount, Long quantity) {
+		return netAmount.multiply(new BigDecimal(quantity));
 	}
 
 	@Override
