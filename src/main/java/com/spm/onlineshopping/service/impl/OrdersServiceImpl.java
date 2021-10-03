@@ -129,6 +129,7 @@ public class OrdersServiceImpl implements OrdersService {
 			orders.setId(generateId());
 			orders.setStatus(CommonStatus.ACTIVE.toString());
 			orders.setReferenceCode(refCode);
+			orders.setQuantity(Long.parseLong(orderObject.getQuantity()));
 			
 			Optional<Users> users = userRepository.findByUsername(username);
 			if (users.isPresent()) {
@@ -143,8 +144,6 @@ public class OrdersServiceImpl implements OrdersService {
 				orders.setNetAmount(calculateNetAmount(item.get().getPrice(), item.get().getDiscount()));
 				orders.setSubTotal(calculateSubTotal(orders.getNetAmount(), orders.getQuantity()));
 			}
-			
-			orders.setQuantity(Long.parseLong(orderObject.getQuantity()));
 			orders.setDeliveryCharge(new BigDecimal(deliveryCharge));
 			orders.setCreatedDate(formatDate(new Date()));
 			ordersRepository.save(orders);
