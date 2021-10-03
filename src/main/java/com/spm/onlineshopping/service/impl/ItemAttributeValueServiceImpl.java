@@ -82,7 +82,7 @@ public class ItemAttributeValueServiceImpl implements ItemAttributeValueService 
 
 	@Override
 	public List<ItemAttributeValue> findByItemId(int itemId) {
-		return itemAttributeValueRepository.findByItemsId(itemId);
+		return itemAttributeValueRepository.findByItemsIdAndStatus(itemId, CommonStatus.ACTIVE.toString());
 	}
 	
 	@Override

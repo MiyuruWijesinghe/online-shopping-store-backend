@@ -19,4 +19,5 @@ public interface ItemAttributeValueRepository extends MongoRepository<ItemAttrib
 	
 	public List<ItemAttributeValue> findByStatus(String status);
 
+	public List<ItemAttributeValue> findByItemsIdAndStatus(int itemId, String status);
 }
