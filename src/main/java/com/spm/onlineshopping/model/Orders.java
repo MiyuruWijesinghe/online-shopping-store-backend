@@ -21,6 +21,14 @@ public class Orders {
 	
 	private Long quantity;
 	
+	private BigDecimal price;
+	
+	private BigDecimal discount;
+	
+	private BigDecimal netAmount;
+	
+	private BigDecimal subTotal;
+	
 	private BigDecimal deliveryCharge;
 	
 	private String status;
@@ -136,6 +144,38 @@ public class Orders {
 
 	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
+	}
+	
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public BigDecimal getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(BigDecimal discount) {
+		this.discount = discount;
+	}
+
+	public BigDecimal getNetAmount() {
+		return netAmount;
+	}
+
+	public void setNetAmount(BigDecimal netAmount) {
+		this.netAmount = netAmount;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
 	}
 
 	public BigDecimal getDeliveryCharge() {
